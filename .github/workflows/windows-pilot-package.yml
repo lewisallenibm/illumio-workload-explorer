@@ -1,0 +1,68 @@
+name: Build Windows pilot package
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - illumioexplorer_v1
+  workflow_dispatch:
+    inputs:
+      postgres_runtime_url:
+        description: Official EDB Windows PostgreSQL binary ZIP URL
+        required: false
+        default: https://get.enterprisedb.com/postgresql/postgresql-16.15-1-windows-x64-binaries.zip
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Build private-PostgreSQL Windows pilot
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt -r requirements-build.txt
+
+      - name: Download native PostgreSQL runtime
+        shell: pwsh
+        env:
+          POSTGRES_RUNTIME_URL: ${{ inputs.postgres_runtime_url || 'https://get.enterprisedb.com/postgresql/postgresql-16.15-1-windows-x64-binaries.zip' }}
+        run: |
+          Invoke-WebRequest -Uri $env:POSTGRES_RUNTIME_URL -OutFile postgres-runtime.zip
+          Expand-Archive -Path postgres-runtime.zip -DestinationPath postgres-runtime
+          $initdb = Get-ChildItem -Path postgres-runtime -Recurse -Filter initdb.exe | Select-Object -First 1
+          if ($null -eq $initdb) { throw "The supplied PostgreSQL archive does not contain bin/initdb.exe." }
+          $runtime = Split-Path (Split-Path $initdb.FullName -Parent) -Parent
+          "ILLUMIO_POSTGRES_RUNTIME_DIR=$runtime" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Build and verify the package
+        shell: pwsh
+        run: |
+          python -m app.scripts.build_desktop_app
+          python -m app.scripts.verify_desktop_package
+
+      - name: Create the tester download
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "dist/Illumio Workload Explorer" -DestinationPath "dist/Illumio-Workload-Explorer-0.1.0-Windows-pilot.zip"
+
+      - name: Upload the Windows pilot ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: Illumio-Workload-Explorer-Windows-pilot
+          path: dist/Illumio-Workload-Explorer-0.1.0-Windows-pilot.zip
+          if-no-files-found: error

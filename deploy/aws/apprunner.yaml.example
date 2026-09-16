@@ -1,0 +1,25 @@
+version: 1.0
+runtime: python3
+build:
+  commands:
+    build:
+      - python -m pip install -r requirements-web.txt
+run:
+  command: uvicorn app.web.main:app --host 0.0.0.0 --port $PORT
+  network:
+    port: 8000
+    env: PORT
+  env:
+    - name: WEB_DEPLOYMENT_MODE
+      value: public
+    - name: WEB_CLOUDFLARE_ACCESS_TEAM_DOMAIN
+      value: https://YOUR-TEAM.cloudflareaccess.com
+  secrets:
+    - name: DATABASE_URL
+      value-from: arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:illumio-web-database-url
+    - name: WEB_CLOUDFLARE_ACCESS_AUD
+      value-from: arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:illumio-web-cloudflare-audience
+    - name: ILLUMIO_API_KEY_ID
+      value-from: arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:illumio-web-pce-key-id
+    - name: ILLUMIO_API_KEY_SECRET
+      value-from: arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:illumio-web-pce-key-secret

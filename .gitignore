@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual Environment
+.venv/
+.venv-broken-*/
+venv/
+
+# Environment Variables
+.env
+
+# macOS
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Database Dumps
+*.sql
+
+# Illumio Data
+*.xlsx
+*.csv
+exports/
+uploads/
+backups/
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+.bob/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+.env
+.env.local
+.env.production
+
+*.log
+var/

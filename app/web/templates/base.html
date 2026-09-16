@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Illumio Workload Explorer — Web Pilot</title>
+  <script src="/static/theme_bootstrap.js"></script>
+  <link rel="stylesheet" href="/static/app.css">
+  <script defer src="/static/preferences.js"></script><script defer src="/static/operations.js"></script><script defer src="/static/documentation_viewer.js"></script>
+</head>
+<body class="page-{{ page }}">
+  <header><div class="brand">Illumio Workload Explorer <span>Web Pilot</span></div><nav>
+    <a class="{{ 'active' if page == 'home' else '' }}" href="/">Overview</a><a class="{{ 'active' if page.startswith('workload') else '' }}" href="/workloads">Workloads</a><a class="{{ 'active' if page.startswith('cmdb') else '' }}" href="/cmdb">CMDB</a><a class="{{ 'active' if page == 'reconciliation' else '' }}" href="/reconciliation">Reconciliation</a><a class="{{ 'active' if page == 'automations' else '' }}" href="/automations">Automations</a><a class="{{ 'active' if page == 'settings' else '' }}" href="/settings">Settings</a>
+  </nav></header>
+  <main>
+  {% if page == 'home' %}
+    <section class="hero"><p class="eyebrow">WEB PILOT</p><h1>Unified workspace for workload inventory, reconciliation, and scheduled reporting.</h1><p>Bring Illumio workload data and CMDB inventory together in one place, review what differs, and prepare the next action with confidence.</p></section>
+    <section class="cards"><article><strong>{{ dashboard.workload_count }}</strong><span>Illumio workloads</span></article><article><strong>{{ dashboard.cmdb_count }}</strong><span>CMDB records</span></article><article><strong>{{ dashboard.latest_run.id if dashboard.latest_run else '—' }}</strong><span>Latest successful reconciliation</span></article></section>
+    <section class="panel"><h2>How it works</h2><p>Start in <a href="/workloads">Workloads</a> to sync or import the Illumio view, then load or import the matching <a href="/cmdb">CMDB</a> inventory. Use search, filters, bulk lookup, sorting, and pagination to find the systems you need. Finally, run <a href="/reconciliation">Reconciliation</a> to compare the two saved snapshots. In the background, PostgreSQL matches the records and highlights meaningful differences—such as labels that are missing or do not agree—so you can review and approve only the changes that matter.</p></section>
+  {% elif page == 'workloads' %}{% include 'operation_status.html' %}{% include 'workloads.html' %}
+  {% elif page == 'workload_detail' %}{% include 'workload_detail.html' %}
+  {% elif page == 'workload_import_preview' %}{% include 'workload_import_preview.html' %}
+  {% elif page == 'cmdb' %}{% include 'operation_status.html' %}{% include 'cmdb.html' %}
+  {% elif page == 'cmdb_import_preview' %}{% include 'cmdb_import_preview.html' %}
+  {% elif page == 'bulk_results' %}{% include 'bulk_results.html' %}
+  {% elif page == 'reconciliation' %}{% include 'operation_status.html' %}{% include 'reconciliation.html' %}
+  {% elif page == 'automations' %}{% include 'automations.html' %}
+  {% elif page == 'settings' %}{% include 'settings.html' %}
+  {% endif %}
+  </main>
+</body></html>
