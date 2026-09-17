@@ -82,18 +82,20 @@
 // ── Inline detail drawer ──
 (() => {
   document.addEventListener("DOMContentLoaded", () => {
-    // Open drawer when a .detail-link is clicked.
+    // Open drawer when a .detail-link button is clicked.
     document.addEventListener("click", (e) => {
       const link = e.target.closest(".detail-link");
       if (!link) return;
+      // Prevent <a href="#"> scroll-to-top in case of anchor fallback.
       e.preventDefault();
       const url = link.dataset.panelUrl;
       if (!url) return;
       const drawer = document.getElementById("detail-drawer");
       if (!drawer) return;
-      drawer.innerHTML = '<p class="muted" style="padding:16px">Loading…</p>';
+      // Reveal first so scrollIntoView works on a visible element.
       drawer.removeAttribute("hidden");
-      drawer.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      drawer.innerHTML = '<p class="muted" style="padding:16px">Loading\u2026</p>';
+      drawer.scrollIntoView({ behavior: "smooth", block: "start" });
       fetch(url, { credentials: "same-origin" })
         .then((r) => {
           if (!r.ok) throw new Error(r.status);

@@ -29,6 +29,11 @@ html[data-theme="light"] .recon-sub-cell { background: #fafafa; border-bottom-co
 html[data-theme="light"] .recon-sub-table th { background: #f2f2f5; }
 html[data-theme="light"] .recon-sub-table th, html[data-theme="light"] .recon-sub-table td { border-bottom-color: #dedee4; }
 
+/* ── Link-styled button (no page navigation side-effects) ── */
+.link-btn { background: none; border: none; color: #72beff; padding: 0; cursor: pointer; font: inherit; text-align: left; }
+.link-btn:hover { text-decoration: underline; }
+html[data-theme="light"] .link-btn { color: #0066cc; }
+
 /* ── Inline detail drawer ── */
 .detail-drawer { margin-top: 24px; border: 1px solid #383b43; border-radius: 10px; background: #1c1e23; overflow: hidden; }
 .detail-drawer[hidden] { display: none; }
