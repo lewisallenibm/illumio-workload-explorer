@@ -28,3 +28,13 @@ html[data-theme="light"] .recon-host-row:hover { background: #e9e9ef; }
 html[data-theme="light"] .recon-sub-cell { background: #fafafa; border-bottom-color: #d7d7dc; }
 html[data-theme="light"] .recon-sub-table th { background: #f2f2f5; }
 html[data-theme="light"] .recon-sub-table th, html[data-theme="light"] .recon-sub-table td { border-bottom-color: #dedee4; }
+
+/* ── Inline detail drawer ── */
+.detail-drawer { margin-top: 24px; border: 1px solid #383b43; border-radius: 10px; background: #1c1e23; overflow: hidden; }
+.detail-drawer[hidden] { display: none; }
+.detail-panel-inner { padding: 20px; }
+.detail-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.detail-panel-header strong { font-size: 1.1rem; }
+.detail-panel-close { padding: 4px 10px; font-size: .85rem; }
+.overflow-wrap-anywhere { overflow-wrap: anywhere; }
+html[data-theme="light"] .detail-drawer { background: #ffffff; border-color: #d7d7dc; }

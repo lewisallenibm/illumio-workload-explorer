@@ -78,3 +78,36 @@
     });
   });
 })();
+
+// ── Inline detail drawer ──
+(() => {
+  document.addEventListener("DOMContentLoaded", () => {
+    // Open drawer when a .detail-link is clicked.
+    document.addEventListener("click", (e) => {
+      const link = e.target.closest(".detail-link");
+      if (!link) return;
+      e.preventDefault();
+      const url = link.dataset.panelUrl;
+      if (!url) return;
+      const drawer = document.getElementById("detail-drawer");
+      if (!drawer) return;
+      drawer.innerHTML = '<p class="muted" style="padding:16px">Loading…</p>';
+      drawer.removeAttribute("hidden");
+      drawer.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      fetch(url, { credentials: "same-origin" })
+        .then((r) => {
+          if (!r.ok) throw new Error(r.status);
+          return r.text();
+        })
+        .then((html) => { drawer.innerHTML = html; })
+        .catch(() => { drawer.innerHTML = '<p class="error" style="padding:16px">Could not load details.</p>'; });
+    });
+
+    // Close drawer on close button click (event delegation — button is injected).
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".detail-panel-close")) return;
+      const drawer = document.getElementById("detail-drawer");
+      if (drawer) { drawer.setAttribute("hidden", ""); drawer.innerHTML = ""; }
+    });
+  });
+})();

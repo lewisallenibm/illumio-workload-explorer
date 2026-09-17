@@ -140,6 +140,25 @@ class IllumioWorkloadRepository:
             session.close()
 
     @staticmethod
+    def get_by_hostname(hostname):
+        """Load the first workload matching hostname with labels and interfaces."""
+        session = SessionLocal()
+        try:
+            return (
+                session.query(IllumioWorkload)
+                .options(
+                    selectinload(IllumioWorkload.interfaces),
+                    selectinload(IllumioWorkload.labels).selectinload(
+                        IllumioWorkloadLabel.label
+                    ),
+                )
+                .filter(IllumioWorkload.hostname == hostname)
+                .first()
+            )
+        finally:
+            session.close()
+
+    @staticmethod
     def get_by_id(workload_id):
         """Load a real ORM workload with its labels and interfaces preloaded."""
         session = SessionLocal()

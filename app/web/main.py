@@ -354,6 +354,24 @@ def workload_detail(request: Request, workload_id: int):
     return _render(request, "workload_detail", workload=workload)
 
 
+@app.get("/workloads/{workload_id}/panel", response_class=HTMLResponse)
+def workload_detail_panel(request: Request, workload_id: int):
+    """Return the workload detail card as an HTML fragment for the inline drawer."""
+    workload = IllumioWorkloadRepository.get_by_id(workload_id)
+    if workload is None:
+        raise HTTPException(404, "Workload was not found.")
+    return _render(request, "workload_detail_panel", workload=workload)
+
+
+@app.get("/workloads/by-hostname/{hostname}/panel", response_class=HTMLResponse)
+def workload_panel_by_hostname(request: Request, hostname: str):
+    """Return the workload detail card by hostname — used by reconciliation inline drawer."""
+    workload = IllumioWorkloadRepository.get_by_hostname(hostname)
+    if workload is None:
+        raise HTTPException(404, "Workload was not found.")
+    return _render(request, "workload_detail_panel", workload=workload)
+
+
 @app.post("/workloads/sync")
 def sync_workloads(request: Request):
     _audit("workloads.sync", request)
@@ -416,6 +434,15 @@ def cmdb(request: Request, q: str = "", app_filter: str = "", region: str = "", 
     pagination = _pagination(total, page, page_size)
     rows = CmdbRepository.search(q or None, app_filter or None, region or None, limit=pagination["page_size"], offset=pagination["offset"], sort_by=sort_by, sort_direction=sort_direction)
     return _render(request, "cmdb", rows=rows, total=total, pagination=pagination, filters={"q": q, "app_filter": app_filter, "region": region, "sort_by": sort_by, "sort_direction": sort_direction}, metadata=CmdbRepository.latest_import_metadata(), elapsed_ms=round((time.perf_counter() - started) * 1000, 1), operation=operation_service.get(operation_id) if operation_id else None, message=message, error=error)
+
+
+@app.get("/cmdb/{hostname}/panel", response_class=HTMLResponse)
+def cmdb_detail_panel(request: Request, hostname: str):
+    """Return a CMDB record as an HTML fragment for the inline drawer."""
+    record = CmdbRepository.get_by_hostname(hostname)
+    if record is None:
+        raise HTTPException(404, "CMDB record was not found.")
+    return _render(request, "cmdb_detail_panel", record=record)
 
 
 @app.post("/cmdb/mock")
