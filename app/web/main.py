@@ -652,5 +652,5 @@ def health():
 
 if __name__ == "__main__":
     import uvicorn
-    host = "127.0.0.1" if settings.WEB_DEPLOYMENT_MODE == "local" else "0.0.0.0"
+    host = "127.0.0.1" if settings.WEB_DEPLOYMENT_MODE == "local" else "0.0.0.0"  # nosec B104
     uvicorn.run("app.web.main:app", host=host, port=int(os.getenv("PORT", "8000")), reload=False)

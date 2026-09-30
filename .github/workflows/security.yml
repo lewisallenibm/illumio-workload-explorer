@@ -36,3 +36,13 @@ jobs:
       - name: Python Syntax Compilation Check
         run: |
           python -m compileall app/
+
+      - name: Install Dependencies for Test Suite
+        run: |
+          pip install -r requirements.txt -r requirements-web.txt pytest
+
+      - name: Run Full Test Suite
+        run: |
+          pytest -v tests/
+        env:
+          PYTHONPATH: .
