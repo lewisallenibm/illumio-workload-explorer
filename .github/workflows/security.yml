@@ -14,6 +14,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Install Linux GUI libraries for Qt headless testing
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libegl1 libgl1 libxkbcommon-x11-0 libdbus-1-3 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xfixes0 libxcb-xinerama0
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -39,10 +44,11 @@ jobs:
 
       - name: Install Dependencies for Test Suite
         run: |
-          pip install -r requirements.txt -r requirements-web.txt pytest
+          pip install -r requirements.txt -r requirements-web.txt pytest pytest-xvfb
 
-      - name: Run Full Test Suite
+      - name: Run Full Test Suite (Headless)
         run: |
           pytest -v tests/
         env:
           PYTHONPATH: .
+          QT_QPA_PLATFORM: offscreen
