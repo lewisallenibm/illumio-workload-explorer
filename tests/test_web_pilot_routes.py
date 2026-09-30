@@ -92,7 +92,8 @@ def test_settings_screen_has_apply_based_appearance_choice(monkeypatch):
 def test_settings_pce_test_reports_a_read_only_success(monkeypatch):
     monkeypatch.setattr(web.PcePreflightService, "check", staticmethod(lambda: {"status": "CONNECTED", "workload_count": 42}))
 
-    response = web.settings_pce_test()
+    req = Request(scope={"type": "http", "method": "POST", "path": "/settings/pce-test", "headers": []})
+    response = web.settings_pce_test(req)
 
     assert response.headers["location"] == "/settings?message=PCE+connection+succeeded+%28read-only%29.+Workload+count%3A+42."
 
